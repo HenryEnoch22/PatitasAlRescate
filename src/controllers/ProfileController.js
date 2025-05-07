@@ -27,6 +27,7 @@ export const updateUserProfile = async (req, res) => {
             // Eliminar la foto subida si hay errores de validación
             fs.unlinkSync(req.file.path);
           }
+          
           return res.status(400).json({ errors: errors.array() });
         }
     
