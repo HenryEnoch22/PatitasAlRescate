@@ -1,5 +1,6 @@
 import User from '../models/UserModel.js';
 import { validationResult } from 'express-validator';
+import fs from "fs";
 
 export const getUserProfile = async (req, res) => {
     try{
@@ -17,16 +18,21 @@ export const getUserProfile = async (req, res) => {
     }
 };
 
+
 export const updateUserProfile = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
+          if (req.file && fs.existsSync(req.file.path)) {
+            // Eliminar la foto subida si hay errores de validación
+            fs.unlinkSync(req.file.path);
+          }
           return res.status(400).json({ errors: errors.array() });
         }
     
         const userId = req.user.id;
         if (!userId) {
-          return res.status(400).json({ message: "No se ha proporcionado un ID de usuario" });
+          return res.status(401).json({ message: "No autorizado" });
         }
     
         // Datos del cuerpo de la petición
@@ -39,7 +45,17 @@ export const updateUserProfile = async (req, res) => {
     
         // Foto si se subió
         if (req.file) {
-          updateData.profilePhoto = req.file.path;
+          const user = await User.findById(userId).select("profilePhoto");
+
+          if (user?.profilePhoto && fs.existsSync(user.profilePhoto)) {
+            // Eliminar la foto anterior si existe
+            try{
+              fs.unlinkSync(user.profilePhoto);
+            }catch (error) {
+              console.error("Error al eliminar la foto anterior:", error.message);
+            } 
+          }
+          updateData.profilePhoto = req.file.path.replace(/\\/g, "/"); 
         }
     
         const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
