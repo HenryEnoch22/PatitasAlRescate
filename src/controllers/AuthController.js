@@ -49,7 +49,6 @@ export const login = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });    
     }
 
-    console.log(req.body);
     const {email, password } = req.body;
 
     try{

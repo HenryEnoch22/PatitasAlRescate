@@ -24,8 +24,7 @@ export const updateUserProfile = async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
           if (req.file && fs.existsSync(req.file.path)) {
-            // Eliminar la foto subida si hay errores de validación
-            fs.unlinkSync(req.file.path);
+            fs.unlinkSync(req.file.path);  // Eliminar la foto subida si hay errores de validación
           }
           
           return res.status(400).json({ errors: errors.array() });
@@ -44,8 +43,7 @@ export const updateUserProfile = async (req, res) => {
         if (birthdate) updateData.birthdate = birthdate;
         if (phone) updateData.phone = phone;
     
-        // Foto si se subió
-        if (req.file) {
+        if (req.file) { // Foto si se subió
           const user = await User.findById(userId).select("profilePhoto");
 
           if (user?.profilePhoto && fs.existsSync(user.profilePhoto)) {
