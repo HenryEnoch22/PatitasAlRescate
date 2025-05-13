@@ -5,7 +5,8 @@ const CreateValidator = [
     .exists()
     .withMessage("El correo electrónico es obligatorio")
     .notEmpty()
-    .withMessage("El correo electrónico no puede estar vacío"),
+    .withMessage("El correo electrónico no puede estar vacío")
+    .isEmail(),
 
   check("petName")
     .exists()

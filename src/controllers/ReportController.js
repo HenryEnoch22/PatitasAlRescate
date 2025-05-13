@@ -1,5 +1,6 @@
 import Report from "../models/ReportModel.js";
 import { validationResult } from "express-validator";
+import mongoose from 'mongoose';
 
 export const createReport = async (req, res) => {
   const errors = validationResult(req);
@@ -121,6 +122,57 @@ export const getReportByQuery = async (req, res) => {
       status: "success",
       results: reports.length,
       data: reports,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error en el servidor", error: error.message });
+  }
+};
+
+export const getReportById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+    
+    const report = await Report.findById(id);
+
+    if (!report) {
+      return res.status(404).json({ message: "Reporte no encontrado" });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      data: report,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error en el servidor", error: error.message });
+  }
+}
+
+export const finishReport = async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    const report = await Report.findByIdAndUpdate(
+      id,
+      { status: "finished" },
+      { new: true }
+    );
+
+    if (!report) {
+      return res.status(404).json({ message: "Reporte no encontrado" });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "Reporte finalizado correctamente",
+      data: report,
     });
   } catch (error) {
     return res
