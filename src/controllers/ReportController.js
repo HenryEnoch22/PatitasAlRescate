@@ -155,6 +155,29 @@ export const getReportById = async (req, res) => {
   }
 }
 
+export const updateReport = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const updatedReport = await Report.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true
+    });
+
+    if (!updatedReport) {
+      return res.status(404).json({ message: "Reporte no encontrado" });
+    }
+
+    return res.status(200).json({
+      message: "Reporte actualizado correctamente",
+      report: updatedReport,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Error al actualizar el reporte", error });
+  }
+};
+
+
 export const finishReport = async (req, res) => {
   const { id } = req.body;
 
