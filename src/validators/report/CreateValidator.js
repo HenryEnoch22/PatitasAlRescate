@@ -1,13 +1,6 @@
-import { check } from "express-validator";
+import { check, validationResult } from "express-validator";
 
 const CreateValidator = [
-  check("userEmail")
-    .exists()
-    .withMessage("El correo electrónico es obligatorio")
-    .notEmpty()
-    .withMessage("El correo electrónico no puede estar vacío")
-    .isEmail(),
-
   check("petName")
     .exists()
     .withMessage("El nombre de la mascota es obligatorio")
@@ -49,6 +42,14 @@ const CreateValidator = [
     .withMessage("La descripción es obligatoria")
     .notEmpty()
     .withMessage("La descripción no puede estar vacía"),
+
+    (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  }
 ];
 
 export default CreateValidator;

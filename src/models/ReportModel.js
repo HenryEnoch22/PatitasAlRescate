@@ -2,8 +2,9 @@ import mongoose from "mongoose";
 
 const reportSchema = new mongoose.Schema(
 	{
-		userEmail: {
-			type: String,
+		userId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
 			required: true,
 		},
 		petName: {
@@ -39,9 +40,22 @@ const reportSchema = new mongoose.Schema(
 		},
 		status: {
 			type: String,
-			enum: ["started", "finished"],
+			enum: ["started", "fake", "finished"],
 			default: "started",
 		},
+		fakeReports: [
+			{
+				reportedBy: {
+					type: mongoose.Schema.Types.ObjectId,
+					ref: "User",
+					required: true,
+				},
+				reason: {
+					type: String,
+					required: true,
+				},
+			},
+		],
 		photo: {
 			// Can use a string for URL or a Buffer for binary data
 			type: Buffer,
