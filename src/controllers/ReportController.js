@@ -156,6 +156,30 @@ export const getReportById = async (req, res) => {
 	}
 };
 
+export const updateReport = async (req, res) => {
+	const { id } = req.params;
+
+	try {
+		const updatedReport = await Report.findByIdAndUpdate(id, req.body, {
+			new: true,
+			runValidators: true,
+		});
+
+		if (!updatedReport) {
+			return res.status(404).json({ message: "Reporte no encontrado" });
+		}
+
+		return res.status(200).json({
+			message: "Reporte actualizado correctamente",
+			report: updatedReport,
+		});
+	} catch (error) {
+		return res
+			.status(500)
+			.json({ message: "Error al actualizar el reporte", error });
+	}
+};
+
 export const finishReport = async (req, res) => {
 	const { reportId } = req.body;
 	const { id: userId } = req.user;
@@ -167,9 +191,10 @@ export const finishReport = async (req, res) => {
 			return res.status(404).json({ message: "Reporte no encontrado" });
 		}
 
-
 		if (!report.userId.equals(userId)) {
-			return res.status(403).json({ message: "No tienes permiso para finalizar este reporte" });
+			return res
+				.status(403)
+				.json({ message: "No tienes permiso para finalizar este reporte" });
 		}
 
 		if (report.status === "finished") {
@@ -225,7 +250,7 @@ export const reportAsfake = async (req, res) => {
 		}
 
 		res.status(200).json({
-      status: "success",
+			status: "success",
 			message: "Reporte falso registrado",
 			data: updatedReport,
 		});
