@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://mongo:27017/patitasdb";
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/patitasdb";
 
 const userSchema = new mongoose.Schema({ email: String });
 const reportSchema = new mongoose.Schema({ userEmail: String, userId: mongoose.Schema.Types.ObjectId });

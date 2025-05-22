@@ -7,7 +7,7 @@ const CreateValidator = [
     .notEmpty()
     .withMessage("El nombre de la mascota no puede estar vacío"),
 
-  check("petDetails.breed")
+  /*check("petDetails.breed")
     .exists()
     .withMessage("La raza de la mascota es obligatoria")
     .notEmpty()
@@ -23,7 +23,7 @@ const CreateValidator = [
     .exists()
     .withMessage("El color de la mascota es obligatorio")
     .notEmpty()
-    .withMessage("El color de la mascota no puede estar vacío"),
+    .withMessage("El color de la mascota no puede estar vacío"),*/
 
   check("lastSeenLocation")
     .exists()
@@ -43,13 +43,13 @@ const CreateValidator = [
     .notEmpty()
     .withMessage("La descripción no puede estar vacía"),
 
-    (req, res, next) => {
+    /*(req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
     next();
-  }
+  }*/
 ];
 
 export default CreateValidator;

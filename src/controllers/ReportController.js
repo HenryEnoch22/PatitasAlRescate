@@ -1,24 +1,35 @@
 import Report from "../models/ReportModel.js";
-import User from "../models/UserModel.js";
 import { validationResult } from "express-validator";
 import mongoose from "mongoose";
+import fs from "fs";
 
 export const createReport = async (req, res) => {
 	const errors = validationResult(req);
-	const { id: userId } = req.user;
+	const userId = req.user.id;
 
 	if (!errors.isEmpty()) {
+		console.log("Borrando imagen por error de validación:", req.file?.path);
+		if (req.file && fs.existsSync(req.file.path)) {
+			fs.unlinkSync(req.file.path);	
+		}
 		return res.status(400).json({ errors: errors.array() });
 	}
 
-	const {
-		petName,
-		petDetails,
-		userContact,
-		lastSeenLocation,
-		description,
-		photo,
-	} = req.body;
+	if (!userId) {
+		return res.status(401).json({ message: "No autorizado" });
+	}
+
+	const { petName, userContact, lastSeenLocation, description } = req.body;
+
+	let petDetails;
+	try {
+		petDetails = JSON.parse(req.body.petDetails); // ✅ Parsea el JSON recibido como string
+	} catch (err) {
+		if (req.file && fs.existsSync(req.file.path)) {
+			fs.unlinkSync(req.file.path);
+		}
+		return res.status(400).json({ message: "Formato inválido en petDetails", error: err.message });
+	}
 
 	try {
 		const reportExists = await Report.findOne({
@@ -30,34 +41,34 @@ export const createReport = async (req, res) => {
 		});
 
 		if (reportExists) {
+			if (req.file && fs.existsSync(req.file.path)) {
+				fs.unlinkSync(req.file.path);	
+			}
 			return res.status(400).json({ message: "El reporte ya existe." });
 		}
+
+		console.log("Archivo que se va a guardar:", req.file);
 
 		const newReport = new Report({
 			userId,
 			petName,
-			petDetails,
+			petDetails, 
 			userContact,
 			lastSeenLocation,
 			description,
-			photo,
+			photo: req.file ? req.file.path.replace(/\\/g, "/") : null,
 		});
 
 		await newReport.save();
 
 		return res.status(201).json({
 			message: "Reporte creado correctamente",
-			report: {
-				userId: newReport.userId,
-				petName: newReport.petName,
-				petDetails: newReport.petDetails,
-				userContact: newReport.userContact,
-				lastSeenLocation: newReport.lastSeenLocation,
-				description: newReport.description,
-				photo: newReport.photo,
-			},
+			newReport,
 		});
 	} catch (error) {
+		if (req.file && fs.existsSync(req.file.path)) {
+				fs.unlinkSync(req.file.path);	
+		}
 		return res
 			.status(500)
 			.json({ message: "Error en el servidor", error: error.message });
