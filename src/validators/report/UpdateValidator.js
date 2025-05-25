@@ -1,4 +1,4 @@
-import { check, body } from "express-validator";
+import { check } from "express-validator";
 
 const UpdateValidator = [
   check("userEmail")
@@ -44,7 +44,17 @@ const UpdateValidator = [
   check("status")
     .optional()
     .isIn(["started", "finished"])
-    .withMessage("El estado debe ser 'started' o 'finished'")
+    .withMessage("El estado debe ser 'started' o 'finished'"),
+
+  
+  check("photo")
+    .optional()
+    .custom((value, { req }) => {
+      if (req.file && !req.file.mimetype.startsWith("image/")) {
+        throw new Error("El archivo debe ser una imagen válida");
+      }
+      return true;
+    })
 ];
 
 export default UpdateValidator;
