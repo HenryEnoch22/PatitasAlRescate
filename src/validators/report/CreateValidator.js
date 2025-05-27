@@ -43,13 +43,14 @@ const CreateValidator = [
     .notEmpty()
     .withMessage("La descripción no puede estar vacía"),
 
-    /*(req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  }*/
+
+  check("photo")
+    .custom((value, { req }) => {
+      if (!req.file && !req.body.photo) {
+        throw new Error("La imagen de la mascota es obligatoria");
+      }
+      return true;
+    })
 ];
 
 export default CreateValidator;
