@@ -21,7 +21,7 @@ router.post("/create", verifyToken, upload.single("photo"), CreateValidator, cre
 router.get("/getAllReports", getAllReports);
 router.patch("/finishReport", verifyToken,  FinishValidator, finishReport);
 router.get("/getReportById/:id", getReportById);
-router.get("/getReportByQuery/:param", getReportByQuery);
+router.get("/getReportByQuery", getReportByQuery);
 router.post("/reportAsfake/:reportId", verifyToken, ReportValidator, reportAsfake);
 router.patch("/updateReport/:id", verifyToken, upload.single("photo"),UpdateValidator, updateReport);
 export default router;
