@@ -1,13 +1,8 @@
-// src/test/controllers/ProfileController.test.js
 import dotenv from 'dotenv';
 dotenv.config({ path: '.env.test' });
 
 import request from 'supertest';
-// ───────────────────────────────────────────────────
-// Asegúrate de que sean **dos** `..` para salir de
-// src/test/controllers → src/test → src → app.js
 import app from '../../app.js';
-
 import mongoose from 'mongoose';
 import User from '../../models/UserModel.js';
 import jwt from 'jsonwebtoken';
@@ -50,4 +45,4 @@ describe('ProfileController', () => {
         expect(res.statusCode).toBe(200);
         expect(res.body.user.name).toBe('Nombre Actualizado');
     });
-});
+})
