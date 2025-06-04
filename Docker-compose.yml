@@ -1,9 +1,9 @@
 version: "3.8"
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: henryenoch22/patitasalrescate:1.0.0
+      #context: .
+      #dockerfile: Dockerfile
     container_name: patitasalrescate
     ports:
       - "3000:3000"
