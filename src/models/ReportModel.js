@@ -57,7 +57,6 @@ const reportSchema = new mongoose.Schema(
 			},
 		],
 		photo: {
-			// Can use a string for URL or a Buffer for binary data
 			type: String,
 			required: false,
 		},
