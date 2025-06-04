@@ -5,6 +5,7 @@ const UpdateProfileValidator = [
     .optional()
     .isString()
     .isLength({ min: 6 }).withMessage('El nombre debe ser una cadena de al menos 6 caracteres'),
+    // .isAlpha().withMessage('El nombre solo puede contener letras'),
 
     check('birthdate')
     .optional()

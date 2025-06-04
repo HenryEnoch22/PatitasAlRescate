@@ -170,6 +170,15 @@ export const getReportById = async (req, res) => {
 export const updateReport = async (req, res) => {
 	const { id } = req.params;
 
+	// 🛠️ Parsear petDetails si viene como string en form-data
+	if (req.body.petDetails && typeof req.body.petDetails === 'string') {
+		try {
+			req.body.petDetails = JSON.parse(req.body.petDetails);
+		} catch (err) {
+			return res.status(400).json({ message: "Formato inválido en petDetails", error: err.message });
+		}
+	}
+
 	try {
 		const updatedReport = await Report.findByIdAndUpdate(id, req.body, {
 			new: true,
@@ -190,6 +199,7 @@ export const updateReport = async (req, res) => {
 			.json({ message: "Error al actualizar el reporte", error });
 	}
 };
+
 
 export const finishReport = async (req, res) => {
 	const { reportId } = req.body;
